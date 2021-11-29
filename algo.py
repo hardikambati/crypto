@@ -149,9 +149,9 @@ class RandomPasswordGeneratorAPI:
 def driver():
 
     assingment1 = CaesarAPI()
-    cipher_text = assingment1.encrypt("Hello World", "1qaz2wsx")
+    cipher_text = assingment1.encrypt("Hello World", 16)
     print(cipher_text)
-    plain_text = assingment1.decrypt(cipher_text, "1qaz2wsx")
+    plain_text = assingment1.decrypt(cipher_text, 16)
     print(plain_text)
     cryptanalyze = assingment1.cryptanalyse(cipher_text)
     print(cryptanalyze)
