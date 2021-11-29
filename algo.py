@@ -148,21 +148,21 @@ class RandomPasswordGeneratorAPI:
 
 def driver():
 
-    # assingment1 = CaesarAPI()
-    # cipher_text = assingment1.encrypt("Hello World", "1qaz2wsx")
-    # print(cipher_text)
-    # plain_text = assingment1.decrypt(cipher_text, "1qaz2wsx")
-    # print(plain_text)
-    # cryptanalyze = assingment1.cryptanalyse(cipher_text)
-    # print(cryptanalyze)
+    assingment1 = CaesarAPI()
+    cipher_text = assingment1.encrypt("Hello World", "1qaz2wsx")
+    print(cipher_text)
+    plain_text = assingment1.decrypt(cipher_text, "1qaz2wsx")
+    print(plain_text)
+    cryptanalyze = assingment1.cryptanalyse(cipher_text)
+    print(cryptanalyze)
 
     assingment2 = ExtendedExperimentalAPI("Linux-icon.bmp")
     assingment2.ecb()
     assingment2.cbc()
     assingment2.cfb()
 
-    # assingment3 = RandomPasswordGeneratorAPI()
-    # assingment3.generate(12)
+    assingment3 = RandomPasswordGeneratorAPI()
+    assingment3.generate(12)
 
 if __name__ == "__main__":
     driver()
