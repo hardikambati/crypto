@@ -58,8 +58,10 @@ class CaesarAPI:
 
     def cryptanalyse(self, ciphertext):
 
-        for key in range(len(ALPHABET)):
+        result = ""
 
+        for key in range(len(ALPHABET)):
+            
             possibility = ""
 
             for letter in ciphertext:
@@ -80,7 +82,9 @@ class CaesarAPI:
 
                     possibility = possibility + letter
 
-            print(f'Key {key}: {possibility}')
+            result = result + 'key ' + str(key) + ': ' + possibility + '\n'
+
+        return result
 
 
 class ExtendedExperimentalAPI:
@@ -138,12 +142,11 @@ class RandomPasswordGeneratorAPI:
 
             password = ''.join(random.choice(value) for i in range(length))
 
-            print(password)
+            return password
 
         else:
 
-            print(
-                'ERROR: The length of password should be in the range of 8 to 80 characters')
+            return 'ERROR: The length of password should be in the range of 8 to 80 characters'
 
 
 def driver():
@@ -162,7 +165,7 @@ def driver():
     assingment2.cfb()
 
     assingment3 = RandomPasswordGeneratorAPI()
-    assingment3.generate(12)
+    print(assingment3.generate(12))
 
 if __name__ == "__main__":
     driver()
