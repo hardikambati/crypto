@@ -1,10 +1,13 @@
 # IMPORTS
+from os import name
 import string
 import random
+from PIL import Image
+from Crypto.Cipher import AES
 
 # FREQUENT USED VARIABLES
-alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 class CaesarAPI:
 
@@ -16,15 +19,14 @@ class CaesarAPI:
 
         get_cipherletter: helper function
     """
-    
+
     @staticmethod
     def get_cipherletter(new_key, letter):
 
-        if letter in alphabets:
-            return alphabets[new_key]
+        if letter in ALPHABET:
+            return ALPHABET[new_key]
         else:
             return letter
-
 
     def encrypt(self, plaintext, key):
 
@@ -34,12 +36,11 @@ class CaesarAPI:
 
         for letter in message:
 
-            new_key = (alphabets.find(letter) + key) % len(alphabets)
+            new_key = (ALPHABET.find(letter) + key) % len(ALPHABET)
 
             ciphertext = ciphertext + self.get_cipherletter(new_key, letter)
 
         return ciphertext
-
 
     def decrypt(self, ciphertext, key):
 
@@ -49,33 +50,31 @@ class CaesarAPI:
 
         for letter in message:
 
-            new_key = (alphabets.find(letter) - key) % len(alphabets)
+            new_key = (ALPHABET.find(letter) - key) % len(ALPHABET)
 
             plaintext = plaintext + self.get_cipherletter(new_key, letter)
 
         return plaintext
 
-
     def cryptanalyse(self, ciphertext):
 
-
-        for key in range(len(alphabets)):
+        for key in range(len(ALPHABET)):
 
             possibility = ""
 
             for letter in ciphertext:
 
-                if letter in alphabets:
+                if letter in ALPHABET:
 
-                    num = alphabets.find(letter)
+                    num = ALPHABET.find(letter)
 
                     num = num - key
 
                     if num < 0:
 
-                        num = num + len(alphabets)
+                        num = num + len(ALPHABET)
 
-                    possibility = possibility + alphabets[num]
+                    possibility = possibility + ALPHABET[num]
 
                 else:
 
@@ -86,7 +85,42 @@ class CaesarAPI:
 
 class ExtendedExperimentalAPI:
 
-    pass
+    def __init__(self, image_path):
+        self.KEY = "770A8A65DA156D24EE2A093277530142"
+        self.image = Image.open(image_path)
+        self.data = None
+
+    def generate_message(self):
+        data = self.image.convert("RGB").tobytes()
+        original = len(data)
+        data = data + b"\x00" * (16 - len(data) % 16)
+        self.data = data[:original]
+
+    def encrypt(self, aes, filename):
+        new_data = aes.encrypt(self.data)
+        r, g, b = tuple(
+            map(lambda d: [new_data[i] for i in range(0, len(new_data)) if i % 3 == d], [0, 1, 2]))
+        pixels = tuple(zip(r, g, b))
+        im2 = Image.new(self.image.mode, self.image.size)
+        im2.putdata(pixels)
+        im2.save(f"{filename}.BMP", "BMP")
+
+    def ecb(self):
+        self.generate_message()
+        aes = AES.new(self.KEY.encode('utf-8'), AES.MODE_ECB)
+        self.encrypt(aes=aes, filename="ecb")
+
+    def cbc(self):
+        self.generate_message()
+        IV = "A"*16
+        aes = AES.new(self.KEY.encode('utf-8'), AES.MODE_CBC, IV.encode('utf-8'))
+        self.encrypt(aes=aes, filename="cbc")
+
+    def cfb(self):
+        self.generate_message()
+        IV = "A"*16
+        aes = AES.new(self.KEY.encode('utf-8'), AES.MODE_CFB, IV.encode('utf-8'))
+        self.encrypt(aes=aes, filename="cfb")
 
 
 class RandomPasswordGeneratorAPI:
@@ -98,15 +132,37 @@ class RandomPasswordGeneratorAPI:
 
     def generate(self, length):
 
-        if(length>=8 and length<=80):
+        if(length >= 8 and length <= 80):
 
             value = string.ascii_letters + string.digits + string.punctuation
 
             password = ''.join(random.choice(value) for i in range(length))
 
             print(password)
-        
+
         else:
 
-            print('ERROR: The length of password should be in the range of 8 to 80 characters')
+            print(
+                'ERROR: The length of password should be in the range of 8 to 80 characters')
 
+
+def driver():
+
+    # assingment1 = CaesarAPI()
+    # cipher_text = assingment1.encrypt("Hello World", "1qaz2wsx")
+    # print(cipher_text)
+    # plain_text = assingment1.decrypt(cipher_text, "1qaz2wsx")
+    # print(plain_text)
+    # cryptanalyze = assingment1.cryptanalyse(cipher_text)
+    # print(cryptanalyze)
+
+    assingment2 = ExtendedExperimentalAPI("Linux-icon.bmp")
+    assingment2.ecb()
+    assingment2.cbc()
+    assingment2.cfb()
+
+    # assingment3 = RandomPasswordGeneratorAPI()
+    # assingment3.generate(12)
+
+if __name__ == "__main__":
+    driver()
